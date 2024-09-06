@@ -43,13 +43,13 @@ ax.set_zlabel('f(X1, X2)')
 while i < max_iteracoes and melhoria:
     melhoria = False
     for j in range(max_vizinhos):
-        x_cand = perturb(x_opt, e)    # Gera uma nova perturbação
-        f_cand = f(*x_cand)           # Calcula o valor da função no novo ponto
-        if f_cand < f_opt:            # Queremos minimizar, então procuramos menor valor
+        x_cand = perturb(x_opt, e)
+        f_cand = f(*x_cand)
+        if f_cand < f_opt:
             x_opt = x_cand
             f_opt = f_cand
             valores.append(f_opt)
-            # ax.scatter(x_opt[0], x_opt[1], f_cand, c='red', marker='*', s=100, linewidth=3)
+            ax.scatter(x_opt[0], x_opt[1], f_cand, c='red', marker='*', s=100, linewidth=3)
             melhoria = True
             break
     i += 1
