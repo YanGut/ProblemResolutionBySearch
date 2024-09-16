@@ -13,7 +13,7 @@ def f(x):
     somatorio = 0
     
     for i in range(p):
-        somatorio += x[i] - A * np.cos(2 * np.pi * x[i])
+        somatorio += (x[i]**2) - A * np.cos(2 * np.pi * x[i])
     
     return somatorio
 
@@ -45,3 +45,20 @@ while t <= epochs:
     
     for individuo in populacao_inicial:
         variaveis_reais = decodifica_cromossomo(cromossomo=individuo, n_bits_per_var=n_bits_var)
+        aptidao = f(variaveis_reais)
+        aptidoes.append(aptidao)
+    
+    melhor_aptidao_atual = min(aptidoes)
+    
+    if abs(melhor_aptidao_atual - melhor_aptidao) < tolerancia:
+        geracoes_sem_melhoria += 1
+    else:
+        geracoes_sem_melhoria = 0
+    
+    if geracoes_sem_melhoria >= 3:
+        print(f"Critério de parada atingido na geração {t}. Melhor aptidão: {melhor_aptidao_atual}")
+        break
+    
+    melhor_aptidao = melhor_aptidao_atual
+    
+    t += 1
