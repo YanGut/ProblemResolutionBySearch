@@ -2,19 +2,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-def perturb(x, e=5):
-    return x + np.random.uniform(-e, e, size=x.shape)
+def perturb(x, e=0.5):
+    x = x + np.random.uniform(-e, e, size=x.shape)
+    
+    x[0] = np.clip(x[0], -8, 8)
+    x[1] = np.clip(x[1], -8, 8)
+    
+    return x
 
 def f(x):
     x1, x2 = x
-    return x1**2 + x2**2
+    return -20 * np.exp(-0.2 * np.sqrt(0.5 * (x1**2 + x2**2))) - np.exp(0.5 * (np.cos(2 * np.pi * x1) + np.cos(2 * np.pi * x2))) + 20 + np.e
 
 def plot_inicial():
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
 
-    x1 = np.linspace(low=-100, high=100, num=100)
-    x2 = np.linspace(low=-100, high=100, num=200)
+    x1 = np.linspace(-8, 8, 100)
+    x2 = np.linspace(-8, 8, 200)
     X1, X2 = np.meshgrid(x1, x2)
     Z = f([X1, X2])
 
@@ -28,7 +33,7 @@ def atualiza_plot(x_opt, f_opt, ax):
     ax.scatter(x_opt[0], x_opt[1], f_opt, color='r', marker='o')
     plt.pause(0.1)
 
-x_opt = np.random.uniform(low=-100, high=100, size=2)
+x_opt = np.random.uniform(low=[-8, -8], high=[8, 8], size=2)
 f_opt = f(x_opt)
 
 ax = plot_inicial()

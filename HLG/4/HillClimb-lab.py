@@ -5,28 +5,26 @@ from matplotlib import cm
 
 def perturb(x,e):
     x1, x2 = x
-    if (x1 < -100 or x1 > 100) or (x2 < -100 or x2 > 100):
-        raise ValueError('x1 e x2 devem estar no intervalo [-100, 100]')
-    x1_new = np.random.uniform(low=x1 - e, high=x1 + e)
-    x2_new = np.random.uniform(low=x2 - e, high=x2 + e)
+    x1_new = np.clip(np.random.uniform(low=x1 - e, high=x1 + e), -5.12, 5.12)
+    x2_new = np.clip(np.random.uniform(low=x2 - e, high=x2 + e), -5.12, 5.12)
     return (x1_new, x2_new)
 
 def f(x1, x2):
-    return x1**2 + x2**2
+    return (x1**2 - 10 * np.cos(2 * np.pi * x1) + 10) + (x2**2 - 10 * np.cos(2 * np.pi * x2) + 10)
 
-x1_axis = np.linspace(-100, 100, 100)
-x2_axis = np.linspace(-100, 100, 100)
+x1_axis = np.linspace(-5.12, 5.12, 200)
+x2_axis = np.linspace(-5.12, 5.12, 200)
 X1, X2 = np.meshgrid(x1_axis, x2_axis)
 Z = f(X1, X2)
 
 x_opt = (
-    np.random.uniform(low=-100, high=100),
-    np.random.uniform(low=-100, high=100)
+    np.random.uniform(low=-5.12, high=5.12),
+    np.random.uniform(low=-5.12, high=5.12)
 )
 f_opt = f(*x_opt)
 
 e = 1.0
-max_iteracoes = 10000
+max_iteracoes = 1000
 max_vizinhos = 20
 melhoria = True
 i = 0
@@ -35,7 +33,7 @@ valores = [f_opt]
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-ax.plot_surface(X1, X2, Z, cmap=cm.coolwarm, alpha=0.6, linewidth=1, antialiased=False)
+ax.plot_surface(X1, X2, Z, cmap='viridis', alpha=0.6)
 ax.set_xlabel('X1')
 ax.set_ylabel('X2')
 ax.set_zlabel('f(X1, X2)')

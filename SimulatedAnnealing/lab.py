@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import time
 
 def calcular_ataques(rainhas):
     """Calcula o número de pares de rainhas que se atacam."""
@@ -46,41 +47,51 @@ def definir_temperatura_inicial(rainhas_iniciais, num_simulacoes=100):
 
 def tempera_simulada(tipo_resfriamento):
     """Executa a têmpera simulada com o tipo de resfriamento especificado."""
-    rainhas_opt = np.random.randint(low=0, high=8, size=8)
-    f_opt = f(rainhas_opt)
-
-    T0 = definir_temperatura_inicial(rainhas_iniciais=rainhas_opt)
-    T = T0
-
+    tempo_inicial = time.time()
+    
     it_max = 1000
-    i = 0
     f_otimos = []
+    solucoes_encontradas = []
 
-    # Loop principal da têmpera simulada com base no tipo de resfriamento
-    while i < it_max:
-        rainhas_cand = perturb(rainhas_opt)
-        f_cand = f(rainhas_cand)
+    while len(solucoes_encontradas) < 92:
+        rainhas_opt = np.random.randint(low=0, high=8, size=8)
+        f_opt = f(rainhas_opt)
+        
+        T0 = definir_temperatura_inicial(rainhas_iniciais=rainhas_opt)
+        T = T0
+        i = 0
+        
+        while i < it_max:
+            rainhas_cand = perturb(rainhas_opt)
+            f_cand = f(rainhas_cand)
 
-        # Critério de aceitação de solução
-        if f_cand > f_opt or np.exp(-(f_opt - f_cand) / T) >= np.random.uniform(0, 1):
-            rainhas_opt = rainhas_cand
-            f_opt = f_cand
+            if f_cand > f_opt or np.exp(-(f_opt - f_cand) / T) >= np.random.uniform(0, 1):
+                rainhas_opt = rainhas_cand
+                f_opt = f_cand
 
-        i += 1
-        f_otimos.append(f_opt)
+            i += 1
+            f_otimos.append(f_opt)
 
-        # Escolha do método de resfriamento
-        if tipo_resfriamento == 1:
-            T *= 0.99  # Resfriamento simples multiplicativo
-        elif tipo_resfriamento == 2:
-            T = T / 1 + (0.99 * np.sqrt(T))  # Resfriamento adaptativo
-        elif tipo_resfriamento == 3:
-            delta_T = (T0 - T) / it_max  # Resfriamento linear
-            T -= delta_T
+            if tipo_resfriamento == 1:
+                T *= 0.99  # Resfriamento simples multiplicativo
+            elif tipo_resfriamento == 2:
+                T = T / 1 + (0.99 * np.sqrt(T))  # Resfriamento adaptativo
+            elif tipo_resfriamento == 3:
+                delta_T = (T0 - T) / it_max  # Resfriamento linear
+                T -= delta_T
 
-        # Interrompe quando encontrar a solução ótima
-        if f_opt == 28:
-            break
+            if f_opt == 28:
+                # Verifica se a solução já foi encontrada anteriormente
+                if not any(np.array_equal(rainhas_opt, sol) for sol in solucoes_encontradas):
+                    solucoes_encontradas.append(np.copy(rainhas_opt))
+                    print(f'Solução {len(solucoes_encontradas)} encontrada: {rainhas_opt}')
+                break
+        
+        tempo_final = time.time()
+        tempo_total = tempo_final - tempo_inicial
+        
+        print(f'\nTempo total de execução: {tempo_total:.2f} segundos')
+        print(f'Número total de soluções distintas encontradas: {len(solucoes_encontradas)}')
 
     # Resultados finais
     print(f'Solução final: {rainhas_opt}')

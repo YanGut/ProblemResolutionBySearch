@@ -1,123 +1,47 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-def roleta(C, probs):
-    i = 0
-    s = probs[i]
-    r = np.random.uniform()
-    while s < r:
-        i += 1
-        s += probs[i]
-    return C[i,:]
+p = 20
+n_bits_var = 10
+N = 100
+epochs = 10
+tolerancia = 1e-6
 
 def f(x):
-    return x**2
-def phi(x, inf, sup):
-    s = 0
-    for i in range(len(x)):
-        s+= x[len(x)-i-1]*2**i
+    A = 10
+    p = len(x)
+    somatorio = 0
     
-    return inf + (sup-inf)/(2**len(x)-1)*s
+    for i in range(p):
+        somatorio += x[i] - A * np.cos(2 * np.pi * x[i])
+    
+    return somatorio
 
+populacao_inicial = np.random.randint(low=0, high=2, size=(N, p * n_bits_var))
+print(f"População inicial: {populacao_inicial}")
 
+def decodifica_cromossomo(cromossomo, n_bits_per_var, intervalo=(-10, 10)):
+    p = len(cromossomo) // n_bits_per_var
+    variaveis = []
+    
+    for i in range(p):
+        bits = cromossomo[i * n_bits_per_var:(i + 1) * n_bits_per_var]
+        valor_binario = int(''.join(bits.astype(str)), 2)
+        valor_real = intervalo[0] + (intervalo[1] - intervalo[0]) * (valor_binario / (2**n_bits_per_var - 1))
+        variaveis.append(valor_real)
+    
+    return variaveis
 
-def f(x, y):
-    return np.abs(x*y*np.sin(y*np.pi/4))
+cromossomo_exemplo = populacao_inicial[0]
+variaveis_reais = decodifica_cromossomo(cromossomo_exemplo, n_bits_var)
+print("Variáveis Reais do Cromossomo Exemplo:\n", variaveis_reais)
 
+t = 0
+melhor_aptidao = float('inf')
+geracoes_sem_melhoria = 0
 
-
-
-
-
-
-N = 16
-p = 2
-nd = 8
-P = np.random.uniform(low=0,high=2,size=(N,p*nd)).astype(int) #representação canônica (bits)
-individuo = np.split(P[0,:],p)
-decodificado = [phi(i,-1,15) for i in individuo]
-aptidao = f(*decodificado)
-
-
-
-
-x1 = P[7,:]
-x2 = P[3,:]
-f1 = np.copy(x1)
-f2 = np.copy(x2)
-mask = np.zeros(len(x1))
-idx = np.random.randint(low = 1,high=len(x1))
-mask[idx:] = 1
-f1[mask[:]==1] = x2[mask[:]==1]
-f2[mask[:]==1] = x1[mask[:]==1]
-bp=1
-
-
-
-
-
-
-
-
-
-
-
-
-P = np.random.uniform(low=-3,high=15,size=(N,p))#representação não canônica (contínuo)
-P = np.random.uniform(low=0, high=8, size=(N,8)).astype(int) #representação não canônica (discreta)
-P = [np.random.permutation(10) for i in range(N)]
-
-
-
-
-
-
-
-bp=1
-
-
-
-
-
-
-
-
-
-
-
-
-# C = np.random.randint(low=0,high=2,size=(N,nd*p))
-
-C = np.array([
-    [1,1,0,0,0],
-    [1,0,0,0,0],
-    [0,0,1,0,0],
-    [0,0,0,1,1],
-])
-
-avaliacao = []
-for i in range(C.shape[0]):
-    avaliacao.append(
-        f(
-            phi(C[i,:], 0, 15), 
-            phi(C[i,:], 0, 15)
-        )
-    )
-
-total = np.sum(avaliacao)
-probs = []
-for i in range(C.shape[0]):
-    probs.append(avaliacao[i]/total)
-
-
-selecionados = np.empty((0,5))
-for i in range(C.shape[0]):
-    selecionados = np.concat((
-        selecionados,
-        roleta(C,probs).reshape(1,5)
-    ))
-
-plt.pie(probs,labels=probs)
-plt.show()
-bp = 1
+while t <= epochs:
+    aptidoes = []
+    
+    for individuo in populacao_inicial:
+        variaveis_reais = decodifica_cromossomo(cromossomo=individuo, n_bits_per_var=n_bits_var)
