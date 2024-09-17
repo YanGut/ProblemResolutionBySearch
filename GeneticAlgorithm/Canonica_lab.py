@@ -6,7 +6,7 @@ def f(x):
     p = len(x)
     somatorio = A * p
     for i in range(p):
-        somatorio += (x[i]**2) - A * np.cos(2 * np.pi * x[i])
+        somatorio += (x[i]**2) - A * np.cos(x[i])
     return somatorio
 
 def aptidao(x):

@@ -52,6 +52,7 @@ while i < max_iteracoes and melhoria:
             break
     i += 1
 
+print(f"Ponto encontrado: [{x_opt[0], x_opt[1]}]")
+
 ax.scatter(x_opt[0], x_opt[1], f_cand, color='g', marker='x', s=100, label='Ponto Ótimo')
-plt.legend()
 plt.show()

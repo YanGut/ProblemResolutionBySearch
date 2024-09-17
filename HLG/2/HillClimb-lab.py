@@ -33,7 +33,7 @@ valores = [f_opt]
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-ax.plot_surface(X1, X2, Z, cmap=cm.coolwarm, alpha=0.6, linewidth=1, antialiased=False)
+ax.plot_surface(X1, X2, Z, cmap=cm.coolwarm, alpha=0.2, linewidth=1, antialiased=False)
 ax.set_xlabel('X1')
 ax.set_ylabel('X2')
 ax.set_zlabel('f(X1, X2)')
@@ -52,6 +52,7 @@ while i < max_iteracoes and melhoria:
             break
     i += 1
 
+print(f"Ponto encontrado: [{x_opt[0], x_opt[1]}]")
+
 ax.scatter(x_opt[0], x_opt[1], f_cand, color='g', marker='x', s=100, label='Ponto Ótimo')
-plt.legend()
 plt.show()

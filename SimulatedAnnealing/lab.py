@@ -9,7 +9,6 @@ def calcular_ataques(rainhas):
     
     for i in range(n):
         for j in range(i + 1, n):
-            # Verifica se estão na mesma linha ou na mesma diagonal
             if rainhas[i] == rainhas[j]:  # Mesma linha
                 ataques += 1
             if abs(rainhas[i] - rainhas[j]) == abs(i - j):  # Mesma diagonal
@@ -37,10 +36,8 @@ def definir_temperatura_inicial(rainhas_iniciais, num_simulacoes=100):
         f_cand = f(rainhas_cand)
         diffs.append(abs(f_cand - f_inicial))
 
-    # Calcula a média das diferenças
     media_diff = np.mean(diffs)
 
-    # Define a temperatura inicial para que a probabilidade de aceitar uma solução pior seja alta (~80%)
     T0 = -media_diff / np.log(0.8)
     
     return T0
@@ -73,15 +70,14 @@ def tempera_simulada(tipo_resfriamento):
             f_otimos.append(f_opt)
 
             if tipo_resfriamento == 1:
-                T *= 0.99  # Resfriamento simples multiplicativo
+                T *= 0.99
             elif tipo_resfriamento == 2:
-                T = T / 1 + (0.99 * np.sqrt(T))  # Resfriamento adaptativo
+                T = T / 1 + (0.99 * np.sqrt(T))
             elif tipo_resfriamento == 3:
-                delta_T = (T0 - T) / it_max  # Resfriamento linear
+                delta_T = (T0 - T) / it_max
                 T -= delta_T
 
             if f_opt == 28:
-                # Verifica se a solução já foi encontrada anteriormente
                 if not any(np.array_equal(rainhas_opt, sol) for sol in solucoes_encontradas):
                     solucoes_encontradas.append(np.copy(rainhas_opt))
                     print(f'Solução {len(solucoes_encontradas)} encontrada: {rainhas_opt}')
@@ -93,17 +89,14 @@ def tempera_simulada(tipo_resfriamento):
         print(f'\nTempo total de execução: {tempo_total:.2f} segundos')
         print(f'Número total de soluções distintas encontradas: {len(solucoes_encontradas)}')
 
-    # Resultados finais
     print(f'Solução final: {rainhas_opt}')
     print(f'Número de pares de rainhas não atacantes: {f_opt}')
 
-    # Gráfico de evolução do valor ótimo
     plt.plot(f_otimos)
     plt.xlabel('Iteração')
     plt.ylabel('f_opt (pares não atacantes)')
     plt.title('Evolução do valor ótimo')
     plt.show()
 
-# Escolha qual tipo de resfriamento usar: 1, 2 ou 3
 tipo_resfriamento = int(input("Escolha o tipo de resfriamento (1, 2 ou 3): "))
 tempera_simulada(tipo_resfriamento)

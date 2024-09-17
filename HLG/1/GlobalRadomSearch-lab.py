@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import cm
 
 def f(x):
     x1, x2 = x
@@ -17,7 +18,7 @@ def plot_inicial():
     Z = f([X1, X2])
 
     # Plotar a superfície da função
-    ax.plot_surface(X1, X2, Z, cmap='viridis', alpha=0.6)
+    ax.plot_surface(X1, X2, Z, cmap=cm.coolwarm, alpha=0.2, linewidth=1, antialiased=False)
     ax.set_xlabel('X1')
     ax.set_ylabel('X2')
     ax.set_zlabel('f(X1, X2)')
