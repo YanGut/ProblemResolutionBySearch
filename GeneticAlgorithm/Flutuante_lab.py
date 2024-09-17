@@ -105,3 +105,5 @@ def AlgoritmoGeneticoPontoFlutuante(N=100, p=20, epocas=10, taxa_mutacao=0.1, ta
         
         t += 1
         print(f"Melhor aptidão da geração {t}: {melhor_aptidao_atual}")
+    
+    return melhor_aptidao

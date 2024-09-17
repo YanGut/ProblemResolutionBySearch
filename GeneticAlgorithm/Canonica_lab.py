@@ -136,3 +136,5 @@ def AlgoritmoGeneticoCanonico(N=100, p=20, nd=8, epocas=10, taxa_mutacao=0.1, ta
         
         t += 1
         print(f"Melhor aptidão da geração {t}: {melhor_aptidao}")
+
+    return melhor_aptidao
