@@ -70,14 +70,15 @@ def tempera_simulada(tipo_resfriamento):
             f_otimos.append(f_opt)
 
             if tipo_resfriamento == 1:
-                T *= 0.99
+                T *= 0.99  # Resfriamento simples multiplicativo
             elif tipo_resfriamento == 2:
-                T = T / 1 + (0.99 * np.sqrt(T))
+                T = T / 1 + (0.99 * np.sqrt(T))  # Resfriamento adaptativo
             elif tipo_resfriamento == 3:
-                delta_T = (T0 - T) / it_max
+                delta_T = (T0 - T) / it_max  # Resfriamento linear
                 T -= delta_T
 
             if f_opt == 28:
+                # Verifica se a solução já foi encontrada anteriormente
                 if not any(np.array_equal(rainhas_opt, sol) for sol in solucoes_encontradas):
                     solucoes_encontradas.append(np.copy(rainhas_opt))
                     print(f'Solução {len(solucoes_encontradas)} encontrada: {rainhas_opt}')
@@ -89,14 +90,17 @@ def tempera_simulada(tipo_resfriamento):
         print(f'\nTempo total de execução: {tempo_total:.2f} segundos')
         print(f'Número total de soluções distintas encontradas: {len(solucoes_encontradas)}')
 
+    # Resultados finais
     print(f'Solução final: {rainhas_opt}')
     print(f'Número de pares de rainhas não atacantes: {f_opt}')
 
+    # Gráfico de evolução do valor ótimo
     plt.plot(f_otimos)
     plt.xlabel('Iteração')
     plt.ylabel('f_opt (pares não atacantes)')
     plt.title('Evolução do valor ótimo')
     plt.show()
 
+# Escolha qual tipo de resfriamento usar: 1, 2 ou 3
 tipo_resfriamento = int(input("Escolha o tipo de resfriamento (1, 2 ou 3): "))
 tempera_simulada(tipo_resfriamento)

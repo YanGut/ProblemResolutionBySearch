@@ -19,7 +19,7 @@ def plot_inicial():
     X1, X2 = np.meshgrid(x1, x2)
     Z = f([X1, X2])
 
-    ax.plot_surface(X1, X2, Z, cmap=cm.coolwarm, alpha=0.6, linewidth=1, antialiased=False)
+    ax.plot_surface(X1, X2, Z, cmap=cm.coolwarm, alpha=0.2, linewidth=1, antialiased=False)
     ax.set_xlabel('X1')
     ax.set_ylabel('X2')
     ax.set_zlabel('f(X1, X2)')
